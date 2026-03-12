@@ -113,6 +113,23 @@ final class ServerDetailsController extends BaseStateController<ServerDetailsSta
     completionHandler: _onCompleted,
   );
 
+  void clearPemCertificate() => handle(
+    () async {
+      setState(
+        ServerDetailsState.idle(
+          data: state.data.copyWith(
+            certificate: const ValueData(null),
+          ),
+          initialData: state.initialData,
+          fieldErrors: state.fieldErrors,
+          routingProfiles: state.routingProfiles,
+        ),
+      );
+    },
+    errorHandler: _onError,
+    completionHandler: _onCompleted,
+  );
+
   void dataChanged({
     String? serverName,
     String? ipAddress,

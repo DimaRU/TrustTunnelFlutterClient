@@ -44,4 +44,6 @@ abstract class ServerDetailsScopeController {
   abstract final void Function(ValueChanged<String> onSaved) delete;
 
   abstract final void Function() pickPemCertificate;
+
+  abstract final void Function() clearPemCertificate;
 }

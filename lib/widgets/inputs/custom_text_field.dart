@@ -105,8 +105,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
     super.didUpdateWidget(oldWidget);
 
     final newText = widget.value;
-    if (newText != null && _controller.text != newText) {
-      _controller.text = newText;
+
+    if (_controller.text != newText) {
+      if (newText == null) {
+        _controller.clear();
+      } else {
+        _controller.text = newText;
+      }
     }
   }
 

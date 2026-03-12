@@ -65,6 +65,7 @@ class _ServerDetailsScopeState extends State<ServerDetailsScope> {
       editing: widget.serverId != null,
       id: widget.serverId,
       pickPemCertificate: _controller.pickPemCertificate,
+clearPemCertificate: _controller.clearPemCertificate,
       child: widget.child,
     ),
   );
@@ -89,6 +90,7 @@ class _InheritedServerDetailsScope extends InheritedModel<ServerDetailsScopeAspe
     required this.editing,
     required this.id,
     required this.pickPemCertificate,
+    required this.clearPemCertificate,
     required super.child,
   }) : _state = state;
 
@@ -106,6 +108,9 @@ class _InheritedServerDetailsScope extends InheritedModel<ServerDetailsScopeAspe
 
   @override
   final void Function() pickPemCertificate;
+
+  @override
+  final void Function() clearPemCertificate;
 
   @override
   final void Function(ValueChanged<String> onSaved) delete;

@@ -196,10 +196,19 @@ class _ServerDetailsFormState extends State<ServerDetailsForm> {
           value: _formData.certificate?.name,
           label: context.ln.pemLabel,
           readOnly: true,
-          suffixIcon: CustomIconButton(
-            onPressed: () => _onSelectPemCertificatePressed(context),
-            icon: AssetIcons.attach,
-          ),
+          suffixIcon: _formData.certificate != null
+              ? CustomIconButton(
+                  icon: Icons.close,
+                  onPressed: () => _onClearPemCertificatePressed(
+                    context,
+                  ),
+                )
+              : CustomIconButton(
+                  icon: AssetIcons.attach,
+                  onPressed: () => _onSelectPemCertificatePressed(
+                    context,
+                  ),
+                ),
           error: ValidationUtils.getErrorString(
             context,
             _fieldErrors,
@@ -228,6 +237,10 @@ class _ServerDetailsFormState extends State<ServerDetailsForm> {
   void _onSelectPemCertificatePressed(
     BuildContext context,
   ) => ServerDetailsScope.controllerOf(context, listen: false).pickPemCertificate();
+
+  void _onClearPemCertificatePressed(
+    BuildContext context,
+  ) => ServerDetailsScope.controllerOf(context, listen: false).clearPemCertificate();
 
   void _onDataChanged(
     BuildContext context, {
