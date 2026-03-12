@@ -57,6 +57,11 @@ class ServerDetailsServiceImpl implements ServerDetailsService {
       fields.add(dnsServersValidationResult);
     }
 
+    final clientRandomValidationResult = validateClientRandom(data.tlsPrefix);
+    if (clientRandomValidationResult != null) {
+      fields.add(clientRandomValidationResult);
+    }
+
     return fields;
   }
 
@@ -89,6 +94,46 @@ class ServerDetailsServiceImpl implements ServerDetailsService {
     enableIpv6: server.ipv6,
     tlsPrefix: server.tlsPrefix ?? '',
   );
+
+  PresentationField? validateClientRandom(String value) {
+    final input = value.trim();
+
+    if (input.isEmpty) {
+      return null;
+    }
+
+    final parts = input.split('/');
+    if (parts.length > 2) {
+      return _getFieldWrongValue(PresentationFieldName.clientRandom);
+    }
+
+    final clientRandom = parts[0];
+    final mask = parts.length == 2 ? parts[1] : null;
+
+    if (!_isEvenLengthHex(clientRandom)) {
+      return _getFieldWrongValue(PresentationFieldName.clientRandom);
+    }
+
+    if (mask != null) {
+      if (!_isEvenLengthHex(mask)) {
+        return _getFieldWrongValue(PresentationFieldName.clientRandom);
+      }
+
+      if (mask.length != clientRandom.length) {
+        return _getFieldOutOfBounds(PresentationFieldName.clientRandom);
+      }
+    }
+
+    return null;
+  }
+
+  bool _isEvenLengthHex(String value) {
+    if (value.isEmpty || value.length.isOdd) {
+      return false;
+    }
+
+    return RegExp(r'^[0-9A-Fa-f]+$').hasMatch(value);
+  }
 
   PresentationField? _validateServerName(String serverName, Set<String> otherServerNames) {
     final fieldName = PresentationFieldName.serverName;
@@ -207,6 +252,11 @@ class ServerDetailsServiceImpl implements ServerDetailsService {
 
   PresentationField _getFieldWrongValue(PresentationFieldName fieldName) => PresentationField(
     code: PresentationFieldErrorCode.fieldWrongValue,
+    fieldName: fieldName,
+  );
+
+  PresentationField _getFieldOutOfBounds(PresentationFieldName fieldName) => PresentationField(
+    code: PresentationFieldErrorCode.outOfBounds,
     fieldName: fieldName,
   );
 }
